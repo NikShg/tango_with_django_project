@@ -11,11 +11,9 @@ class PageAdmin(admin.ModelAdmin):
 admin.site.register(Category) 
 admin.site.register(Page, PageAdmin)
 
-
 class ChoiceInline(admin.TabularInline):
     model = Choice
     extra = 3
-
 
 class QuestionAdmin(admin.ModelAdmin):
     fieldsets = [
