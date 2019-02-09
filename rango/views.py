@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from rango.models import Category
+from rango.models import Page
+#from unicodedata import category
 #def index(request): 
 #    return HttpResponse("Rango says hey there partner!<br/> <a href='/rango/about/'>About</a>.")
 
@@ -11,8 +14,42 @@ def about (request):
 def index(request):
      # Construct a dictionary to pass to the template engine as its context. 
      # Note the key boldmessage is the same as {{ boldmessage }} in the template! 
-     context_dict = {'boldmessage': "Crunchy, creamy, cookie, candy, cupcake!"}
+     #context_dict = {'boldmessage': "Crunchy, creamy, cookie, candy, cupcake!"}
      # Return a rendered response to send to the client.
      # We make use of the shortcut function to make our lives easier.
      # Note that the first parameter is the template we wish to use. 
-     return render(request, 'rango/index.html', context=context_dict)
+     #return render(request,'rango/index.html', context=context_dict)
+     
+     #get top 5 categories from database by likes, place in context_dict
+     
+    category_list = Category.objects.order_by('-likes')[:5] 
+    page_list = Page.objects.order_by('-views')[:5]
+    
+    context_dict = {'categories': category_list, 'pages': page_list}
+     
+     #render the response
+    return render(request, 'rango/index.html', context_dict)
+ 
+ # defin context dict, extract data from models, add data to dict
+def show_category(request, category_name_slug):
+    #dict to pas to template
+    context_dict={}
+    try:
+        #find category slug => gets instace or raises an exception
+        category = Category.objects.get(slug = category_name_slug)
+         
+        # get associated pages
+        pages = Page.objects.filter(category=category)
+         
+        #add tp the template under name pages
+        context_dict['pages'] = pages
+         
+        # add cat to verify whtether cat exists
+        context_dict['category'] = category;
+    except Category.DoesNotExist:
+        # if there is no
+        context_dict['category']= None
+        context_dict['pages']=None
+        # render and return
+    return render (request,'rango/category.html',context_dict)
+     

@@ -3,12 +3,16 @@ from django.contrib import admin
 from rango.models import Category, Page
 from polls.models import Choice,Question
 
-
+# to include head
 class PageAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'url')
-    
+
+# customise admin to populate slug field
+class CategoryAdmin(admin.ModelAdmin): 
+    prepopulated_fields = {'slug':('name',)}
+
 # register in admin panel
-admin.site.register(Category) 
+admin.site.register(Category, CategoryAdmin) 
 admin.site.register(Page, PageAdmin)
 
 class ChoiceInline(admin.TabularInline):
