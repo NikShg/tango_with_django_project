@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rango.models import Category
 from rango.models import Page
+from rango.forms import CategoryForm
+from rango.forms import PageForm
 #from unicodedata import category
 #def index(request): 
 #    return HttpResponse("Rango says hey there partner!<br/> <a href='/rango/about/'>About</a>.")
@@ -51,5 +53,49 @@ def show_category(request, category_name_slug):
         context_dict['category']= None
         context_dict['pages']=None
         # render and return
+        
     return render (request,'rango/category.html',context_dict)
-     
+
+def add_category(request):
+    
+    form = CategoryForm()
+    #A HTTP Post
+ 
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        
+        # check validity
+        if form.is_valid():
+            #save cat to db
+            form.save(commit = True)
+            
+            # save direct to index page
+            return index(request)
+        else:
+            #if error
+            print(form.errors)
+            
+            #render
+    return render(request, 'rango/add_category.html', {'form': form})
+
+def add_page(request, category_name_slug):
+    try:
+        category = Category.objects.get(slug = category_name_slug)
+    except Category.DoesNotExist:
+        category = None
+        
+    form = PageForm()
+    if request.method =='POST':
+        form = PageForm(request.POST)
+        if form.is_valid():
+            if category:
+                page = form.save(commit=False)
+                page.category = category
+                page.views = 0
+                page.save()
+                return show_category(request, category_name_slug)
+        else:
+            print(form.errors)
+    context_dict = {'form':form, 'category': category}
+    return render(request,'rango/add_page.html', context_dict)
+    
