@@ -10,8 +10,11 @@ from rango.forms import PageForm
 
 def about (request):
     #return HttpResponse("Rango says here is the about page.<a href='/rango/'>Index</a>. ")
-    context_dict ={'boldmessage': "This tutorial has been put together by 2207113"}
-    return render(request, 'rango/about.html', context = context_dict)
+    #context_dict ={'boldmessage': "This tutorial has been put together by 2207113"}
+    #return render(request, 'rango/about.html', context = context_dict)
+    print(request.method)  
+    print(request.user) 
+    return render(request, 'rango/about.html', {})
 
 def index(request):
      # Construct a dictionary to pass to the template engine as its context. 
@@ -26,9 +29,8 @@ def index(request):
      
     category_list = Category.objects.order_by('-likes')[:5] 
     page_list = Page.objects.order_by('-views')[:5]
-    
     context_dict = {'categories': category_list, 'pages': page_list}
-     
+    
      #render the response
     return render(request, 'rango/index.html', context_dict)
  
@@ -53,7 +55,7 @@ def show_category(request, category_name_slug):
         context_dict['category']= None
         context_dict['pages']=None
         # render and return
-        
+      
     return render (request,'rango/category.html',context_dict)
 
 def add_category(request):
