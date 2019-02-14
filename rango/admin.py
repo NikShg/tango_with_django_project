@@ -2,7 +2,9 @@ from django.contrib import admin
 
 from rango.models import Category, Page
 from polls.models import Choice,Question
+from rango.models import UserProfile
 
+admin.site.register(UserProfile)
 # to include head
 class PageAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'url')
