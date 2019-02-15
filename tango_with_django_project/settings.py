@@ -34,6 +34,8 @@ SECRET_KEY = 'm3k@@f+cg7#w7+ny_3tm*w+f(ns4vw27=%vy(p!@_ruo-b=nt2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 1209600
 
 ALLOWED_HOSTS = []
 
